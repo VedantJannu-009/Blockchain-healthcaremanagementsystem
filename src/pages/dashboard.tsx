@@ -1,15 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Check, Copy } from "lucide-react";
-import { useState } from "react";
+import CopyButton from "@/components/copyButton";
+import { Card } from "@/components/ui/card";
 
-const Dashboard = ({ userRole, account }) => {
-  const [copied, setCopied] = useState(false);
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(account);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
-  };
+interface DashboardProps {
+  userRole: string;
+  account: string;
+}
+
+const Dashboard = ({ userRole, account }: DashboardProps) => {
   return (
     <section>
       <Card className="mb-8 flex-row justify-between items-center px-3">
@@ -20,13 +17,7 @@ const Dashboard = ({ userRole, account }) => {
           <span className="text-lg font-medium truncate max-w-[200px] md:max-w-none">
             {account.substring(0, 6)}...{account.substring(account.length - 4)}
           </span>
-          <Button onClick={copyToClipboard} variant="outline" size="icon">
-            {copied ? (
-              <Check className="w-4 h-4 text-green-500" />
-            ) : (
-              <Copy className="w-4 h-4" />
-            )}
-          </Button>
+          <CopyButton text={account} />
         </div>
       </Card>
     </section>

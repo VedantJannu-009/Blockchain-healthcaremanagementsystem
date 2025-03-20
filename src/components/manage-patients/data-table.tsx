@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center py-4">
         <DataTableColumnFilter
           table={table}
-          columnId={"doctorName"}
+          columnId={"patientName"}
           placeholder="search by name"
         />
         <DataTableViewOptions table={table} />

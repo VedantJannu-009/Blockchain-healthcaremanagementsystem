@@ -11,31 +11,24 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { patientSchema } from "@/lib/constants";
+import { Patient } from "@/lib/types";
 
 interface RegistrationProps {
-  registerAsPatient: (values: {
-    patientName: string;
-    patientAge: string;
-  }) => void;
+  registerAsPatient: (values: Patient) => void;
 }
 
 const Registration = ({ registerAsPatient }: RegistrationProps) => {
-  const formSchema = z.object({
-    patientName: z.string().min(2).max(50),
-    patientAge: z.string().min(1).max(3),
-  });
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<Patient>({
+    resolver: zodResolver(patientSchema),
     defaultValues: {
       patientName: "",
-      patientAge: "",
+      patientAge: 0,
+      patientAddress: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: Patient) {
     registerAsPatient(values);
     console.log(values);
   }

@@ -1,4 +1,6 @@
-export const contractAddress = "0xb18ddbf3b3ed6659bf90a1f2ae1128f10a752a75"; // Replace with your contract address
+import { z } from "zod";
+
+export const contractAddress = "0xa10153000d844441d0ccc8d7890de98e31cb9111"; // Replace with your contract address
 export const contractABI = [
   {
     inputs: [],
@@ -23,85 +25,6 @@ export const contractABI = [
     ],
     name: "AccessRevoked",
     type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "doctorAddress",
-        type: "address",
-      },
-    ],
-    name: "activateDoctor",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "patientAddress",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "disease",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "diagnosis",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "treatment",
-        type: "string",
-      },
-      {
-        internalType: "address",
-        name: "doctorAddress",
-        type: "address",
-      },
-    ],
-    name: "addRecord",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-    ],
-    name: "approveTransferByPatient",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "cleanExpiredRequests",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "doctorAddress",
-        type: "address",
-      },
-    ],
-    name: "deactivateDoctor",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
   },
   {
     anonymous: false,
@@ -212,109 +135,6 @@ export const contractABI = [
     type: "event",
   },
   {
-    inputs: [
-      {
-        internalType: "address",
-        name: "doctorAddress",
-        type: "address",
-      },
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        internalType: "string",
-        name: "specialization",
-        type: "string",
-      },
-    ],
-    name: "registerDoctor",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "name",
-        type: "string",
-      },
-      {
-        internalType: "uint256",
-        name: "age",
-        type: "uint256",
-      },
-    ],
-    name: "registerPatient",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "requestId",
-        type: "uint256",
-      },
-      {
-        internalType: "string",
-        name: "reason",
-        type: "string",
-      },
-    ],
-    name: "rejectTransferByPatient",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "recordId",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "toDoctor",
-        type: "address",
-      },
-    ],
-    name: "requestTransfer",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "doctorAddress",
-        type: "address",
-      },
-    ],
-    name: "revokeShareAccessFromDoctor",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "doctorAddress",
-        type: "address",
-      },
-    ],
-    name: "shareRecordsWithDoctor",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -324,27 +144,21 @@ export const contractABI = [
         type: "uint256",
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "recordId",
-        type: "uint256",
+        indexed: true,
+        internalType: "address",
+        name: "patientAddress",
+        type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "fromDoctor",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "toDoctor",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "patientAddresses",
         type: "address",
       },
     ],
@@ -361,27 +175,21 @@ export const contractABI = [
         type: "uint256",
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "recordId",
-        type: "uint256",
+        indexed: true,
+        internalType: "address",
+        name: "patientAddress",
+        type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "fromDoctor",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "toDoctor",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "patientAddresses",
         type: "address",
       },
       {
@@ -404,32 +212,105 @@ export const contractABI = [
         type: "uint256",
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "recordId",
-        type: "uint256",
+        indexed: true,
+        internalType: "address",
+        name: "patientAddress",
+        type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "fromDoctor",
         type: "address",
       },
       {
-        indexed: false,
+        indexed: true,
         internalType: "address",
         name: "toDoctor",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "patientAddress",
         type: "address",
       },
     ],
     name: "TransferRequested",
     type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "doctorAddress",
+        type: "address",
+      },
+    ],
+    name: "activateDoctor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "patientAddress",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "disease",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "diagnosis",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "treatment",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "doctorAddress",
+        type: "address",
+      },
+    ],
+    name: "addRecord",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "requestId",
+        type: "uint256",
+      },
+    ],
+    name: "approveTransferByPatient",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "cleanExpiredRequests",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "doctorAddress",
+        type: "address",
+      },
+    ],
+    name: "deactivateDoctor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [],
@@ -627,11 +508,6 @@ export const contractABI = [
           {
             components: [
               {
-                internalType: "uint256",
-                name: "recordID",
-                type: "uint256",
-              },
-              {
                 internalType: "address",
                 name: "patientAddress",
                 type: "address",
@@ -712,6 +588,109 @@ export const contractABI = [
     stateMutability: "view",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "doctorAddress",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "specialization",
+        type: "string",
+      },
+    ],
+    name: "registerDoctor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "age",
+        type: "uint256",
+      },
+    ],
+    name: "registerPatient",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "requestId",
+        type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+    ],
+    name: "rejectTransferByPatient",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "patientAddress",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "toDoctor",
+        type: "address",
+      },
+    ],
+    name: "requestTransfer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "doctorAddress",
+        type: "address",
+      },
+    ],
+    name: "revokeShareAccessFromDoctor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "doctorAddress",
+        type: "address",
+      },
+    ],
+    name: "shareRecordsWithDoctor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];
 
 export const specializations = [
@@ -726,3 +705,28 @@ export const specializations = [
   { label: "Endocrinology", value: "endocrinology" },
   { label: "Gastroenterology", value: "gastroenterology" },
 ] as const;
+
+export const doctorSchema = z.object({
+  doctorAddress: z
+    .string()
+    .min(10, "Invalid address")
+    .max(42, "Invalid address"),
+  doctorName: z
+    .string()
+    .min(2, "Name is too short")
+    .max(50, "Name is too long"),
+  doctorSpecialization: z.string().min(1, "Select a specialization"),
+  isActive: z.boolean(),
+});
+
+export const patientSchema = z.object({
+  patientAddress: z
+    .string()
+    .min(10, "Invalid address")
+    .max(42, "Invalid address"),
+  patientName: z
+    .string()
+    .min(2, "Name is too short")
+    .max(50, "Name is too long"),
+  patientAge: z.number().int().min(1, "Invalid age"),
+});

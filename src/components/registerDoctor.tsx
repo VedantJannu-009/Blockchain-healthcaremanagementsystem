@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -16,10 +15,9 @@ import {
 } from "@/components/ui/popover";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { specializations } from "@/lib/constants";
+import { doctorSchema, specializations } from "@/lib/constants";
 import {
   Command,
   CommandEmpty,
@@ -28,48 +26,44 @@ import {
   CommandItem,
   CommandList,
 } from "./ui/command";
+import { Doctor } from "@/lib/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
 
 interface RegisterDoctorProps {
-  registerAsDoctor: (values: {
-    doctorAddress: string;
-    doctorName: string;
-    doctorSpecialization: string;
-  }) => void;
+  registerAsDoctor: (values: Doctor) => void;
 }
 
 const RegisterDoctor = ({ registerAsDoctor }: RegisterDoctorProps) => {
-  const formSchema = z.object({
-    doctorAddress: z
-      .string()
-      .min(10, "Invalid address")
-      .max(42, "Invalid address"),
-    doctorName: z
-      .string()
-      .min(2, "Name is too short")
-      .max(50, "Name is too long"),
-    doctorSpecialization: z.string().min(1, "Select a specialization"),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<Doctor>({
+    resolver: zodResolver(doctorSchema),
     defaultValues: {
       doctorAddress: "",
       doctorName: "",
       doctorSpecialization: "",
+      isActive: true,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: Doctor) {
     registerAsDoctor(values);
     console.log(values);
   }
 
   return (
-    <Card className="max-w-lg mx-auto mt-8 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-center">Register New Doctor</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button>Add Doctor</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>New Doctor Registration</DialogTitle>
+        </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Doctor Address */}
@@ -174,8 +168,8 @@ const RegisterDoctor = ({ registerAsDoctor }: RegisterDoctorProps) => {
             </Button>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </DialogContent>
+    </Dialog>
   );
 };
 

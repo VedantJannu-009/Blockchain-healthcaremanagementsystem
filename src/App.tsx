@@ -8,8 +8,9 @@ import Header from "./components/header";
 import Registration from "./pages/registration";
 import Connect from "./pages/connect";
 import Dashboard from "./pages/dashboard";
-import RegisterDoctor from "./components/registerDoctor";
 import ManageDoctors from "./components/manage-doctors/manageDoctors";
+import EventLogs from "./components/eventLogs";
+import ManagePatients from "./components/manage-patients/managePatients";
 const App = () => {
   const [currentView, setCurrentView] = useState("connect");
   const [userRole, setUserRole] = useState(null);
@@ -19,12 +20,6 @@ const App = () => {
 
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
-
-  // Registration states
-
-  const [doctorAddress, setDoctorAddress] = useState("");
-  const [doctorName, setDoctorName] = useState("");
-  const [doctorSpecialization, setDoctorSpecialization] = useState("");
 
   // Patient states
   const [medicalRecords, setMedicalRecords] = useState([]);
@@ -160,26 +155,6 @@ const App = () => {
       loadPatientData();
     } catch (error) {
       console.error("Patient registration failed:", error);
-      alert("Registration failed");
-    }
-  };
-
-  const registerAsDoctor = async (
-    doctorAddress: string,
-    doctorName: string,
-    doctorSpecialization: string
-  ) => {
-    try {
-      const tx = await contract.registerDoctor(
-        doctorAddress,
-        doctorName,
-        doctorSpecialization
-      );
-      await tx.wait();
-      fetchDoctors();
-      alert("Doctor registered!");
-    } catch (error) {
-      console.error("Doctor registration failed:", error);
       alert("Registration failed");
     }
   };
@@ -343,28 +318,6 @@ const App = () => {
   //     return false; // Default to false in case of an error
   //   }
   // };
-  const activateDoctor = async (doctorAddress) => {
-    try {
-      const tx = await contract.activateDoctor(doctorAddress);
-      await tx.wait();
-      alert("Doctor activated successfully!");
-      fetchDoctors(); // Refresh the doctors list
-    } catch (error) {
-      console.error("Failed to activate doctor:", error);
-      alert("Failed to activate doctor.");
-    }
-  };
-  const deactivateDoctor = async (doctorAddress) => {
-    try {
-      const tx = await contract.deactivateDoctor(doctorAddress);
-      await tx.wait();
-      alert("Doctor deactivated successfully!");
-      fetchDoctors(); // Refresh the doctors list
-    } catch (error) {
-      console.error("Failed to deactivate doctor:", error);
-      alert("Failed to deactivate doctor.");
-    }
-  };
   const approveTransferByPatient = async (requestId) => {
     try {
       const tx = await contract.approveTransferByPatient(requestId);
@@ -394,65 +347,12 @@ const App = () => {
   const renderDashboard = () => (
     <div className="container mx-auto p-6">
       <Dashboard userRole={userRole} account={account} />
-      <header className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">
-          Welcome, {userRole.charAt(0).toUpperCase() + userRole.slice(1)}
-        </h2>
-        <p className="text-gray-600 mt-2">Connected address: {account}</p>
-      </header>
-
       {/* Owner Dashboard */}
-      {userRole === "owner" && (
+      {userRole === "owner" && contract && (
         <div className="space-y-8">
-          <RegisterDoctor
-            registerAsDoctor={({
-              doctorAddress,
-              doctorName,
-              doctorSpecialization,
-            }): void => {
-              registerAsDoctor(doctorAddress, doctorName, doctorSpecialization);
-            }}
-          />
-          <ManageDoctors />
-          <div className="p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-6">Manage Doctors</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {doctors.map((doctor) => (
-                <div key={doctor.address} className="border p-4 rounded-lg">
-                  <p className="font-semibold">{doctor.name}</p>
-                  <p className="text-sm text-gray-600">
-                    {doctor.specialization}
-                  </p>
-                  <div className="flex items-center justify-between mt-3">
-                    <span
-                      className={`px-2 py-1 rounded text-sm ${
-                        doctor.isActive
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {doctor.isActive ? "Active" : "Inactive"}
-                    </span>
-                    {doctor.isActive ? (
-                      <Button
-                        onClick={() => deactivateDoctor(doctor.address)}
-                        className="bg-red-500 hover:bg-red-600  text-sm px-3 py-1 rounded"
-                      >
-                        Deactivate
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => activateDoctor(doctor.address)}
-                        className="bg-green-500 hover:bg-green-600  text-sm px-3 py-1 rounded"
-                      >
-                        Activate
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <EventLogs contract={contract} />
+          <ManageDoctors contract={contract} />
+          <ManagePatients contract={contract} />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="p-6 rounded-lg shadow-md">
@@ -467,26 +367,6 @@ const App = () => {
                     <p className="text-sm text-gray-600">Age: {patient.age}</p>
                     <p className="text-xs text-gray-400 truncate">
                       {patient.address}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="p-6 rounded-lg shadow-md">
-              <h3 className="text-2xl font-semibold mb-4">All Doctors</h3>
-              <div className="space-y-3">
-                {doctors.map((doctor) => (
-                  <div
-                    key={doctor.address}
-                    className="border-b pb-2 last:border-b-0"
-                  >
-                    <p className="font-medium">{doctor.name}</p>
-                    <p className="text-sm text-gray-600">
-                      {doctor.specialization}
-                    </p>
-                    <p className="text-xs text-gray-400 truncate">
-                      {doctor.address}
                     </p>
                   </div>
                 ))}
@@ -704,7 +584,7 @@ const App = () => {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="min-h-screen max-w-6/12 mx-auto">
+      <div className="min-h-screen mx-auto">
         <Header
           account={account}
           accounts={accounts}

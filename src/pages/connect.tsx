@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 
-const Connect = ({ connectWallet }) => {
+interface ConnectProps {
+  connectWallet: () => void;
+}
+
+const Connect = ({ connectWallet }: ConnectProps) => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
+    <div className="h-full flex flex-col items-center justify-center">
       <h1 className="text-4xl font-bold mb-8">Healthcare Management System</h1>
       <Button
         onClick={connectWallet}
