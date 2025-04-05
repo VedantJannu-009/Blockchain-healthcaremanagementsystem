@@ -4,7 +4,7 @@ import { DataTable } from "./data-table";
 import { Skeleton } from "../ui/skeleton";
 import { Contract } from "ethers";
 import { toast } from "sonner";
-import RegisterDoctor from "../registerDoctor";
+import RegisterDoctor from "../register-doctor";
 import { RefreshCcw } from "lucide-react";
 import { Button } from "../ui/button";
 import { Doctor, Patient } from "@/lib/types";
@@ -16,7 +16,6 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "../ui/drawer";
 import {
   Sheet,
@@ -24,7 +23,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "../ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -81,7 +79,7 @@ const ManageDoctors = ({ contract }: ManageDoctorsProps) => {
       console.error("Failed to fetch patients:", error);
       toast("Failed to load patients");
     } finally {
-      setTimeout(() => setLoading(false), 1000);
+      setLoading(false);
     }
   };
 
@@ -108,7 +106,7 @@ const ManageDoctors = ({ contract }: ManageDoctorsProps) => {
       console.error("Failed to fetch doctor info:", error);
       toast("Failed to load doctor info");
     } finally {
-      setTimeout(() => setLoading(false), 1000);
+      setLoading(false);
     }
   };
 
@@ -234,10 +232,7 @@ const ManageDoctors = ({ contract }: ManageDoctorsProps) => {
 
       {/* Doctor Details Drawer */}
       {isMobile ? (
-        <Drawer
-          open={isDrawerOpen}
-          onOpenChange={setIsDrawerOpen}
-        >
+        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
           <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>Doctor Details</DrawerTitle>
@@ -263,17 +258,17 @@ const ManageDoctors = ({ contract }: ManageDoctorsProps) => {
                 </p>
 
                 <h3 className="mt-4 font-medium">Shared Patients</h3>
-                <ul className="list-disc list-inside mt-2">
+                <div className="list-disc list-inside mt-2">
                   {sharedPatients.length > 0 ? (
                     sharedPatients.map((patient) => (
-                      <li key={patient.patientAddress}>
+                      <p key={patient.patientAddress}>
                         {patient.patientName} (Age: {patient.patientAge})
-                      </li>
+                      </p>
                     ))
                   ) : (
                     <p className="text-sm text-gray-500">No shared patients</p>
                   )}
-                </ul>
+                </div>
               </div>
             ) : (
               <p className="text-center p-4">Loading...</p>

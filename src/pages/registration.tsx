@@ -23,15 +23,10 @@ const Registration = ({ registerAsPatient }: RegistrationProps) => {
     resolver: zodResolver(patientSchema),
     defaultValues: {
       patientName: "",
-      patientAge: 0,
-      patientAddress: "",
+      patientAge: 12,
+      patientAddress: "0x1111111111111111111111111111111111111111",
     },
   });
-
-  function onSubmit(values: Patient) {
-    registerAsPatient(values);
-    console.log(values);
-  }
 
   return (
     <Card className="max-w-md mx-auto mt-8">
@@ -40,7 +35,7 @@ const Registration = ({ registerAsPatient }: RegistrationProps) => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(registerAsPatient)} className="space-y-4">
             <FormField
               control={form.control}
               name="patientName"
@@ -61,7 +56,12 @@ const Registration = ({ registerAsPatient }: RegistrationProps) => {
                 <FormItem>
                   <FormLabel>Age</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Age" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Age"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))} // ✅ Convert properly
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

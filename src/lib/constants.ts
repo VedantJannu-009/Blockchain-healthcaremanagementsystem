@@ -707,10 +707,9 @@ export const specializations = [
 ] as const;
 
 export const doctorSchema = z.object({
-  doctorAddress: z
-    .string()
-    .min(10, "Invalid address")
-    .max(42, "Invalid address"),
+  doctorAddress: z.string().refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
+    message: "Invalid Ethereum address",
+  }),
   doctorName: z
     .string()
     .min(2, "Name is too short")
@@ -722,11 +721,29 @@ export const doctorSchema = z.object({
 export const patientSchema = z.object({
   patientAddress: z
     .string()
-    .min(10, "Invalid address")
-    .max(42, "Invalid address"),
+    .refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
+      message: "Invalid Ethereum address",
+    }),
   patientName: z
     .string()
     .min(2, "Name is too short")
     .max(50, "Name is too long"),
-  patientAge: z.number().int().min(1, "Invalid age"),
+  patientAge: z.coerce.number().min(1, "Invalid age").max(120, "Invalid age"),
+});
+
+export const recordSchema = z.object({
+  recordID: z.string(),
+  disease: z.string(),
+  diagnosis: z.string(),
+  treatment: z.string(),
+  timestamp: z.string(),
+  diagnosedBy: z.string().refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
+    message: "Invalid Ethereum address",
+  }),
+});
+
+export const shareRecordSchema = z.object({
+  doctorAddress: z.string().refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
+    message: "Invalid Ethereum address",
+  }),
 });

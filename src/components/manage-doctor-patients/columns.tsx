@@ -13,7 +13,7 @@ import { Patient } from "@/lib/types";
 import CopyButton from "../copy-button";
 
 interface ColumnProps {
-  viewPatientDetails: (doctorAddress: string) => void;
+  viewPatientDetails: (patientAddress: string) => void;   
 }
 export const columns = ({
   viewPatientDetails,

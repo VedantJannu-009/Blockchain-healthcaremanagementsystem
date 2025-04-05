@@ -22,7 +22,6 @@ import {
 import { useState } from "react";
 import { DataTablePagination } from "../data-table-pagination";
 import { DataTableViewOptions } from "../data-table-view-options";
-import DataTableColumnFilter from "../data-table-column-filter";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -56,11 +55,6 @@ export function DataTable<TData, TValue>({
   return (
     <section>
       <div className="flex items-center py-4">
-        <DataTableColumnFilter
-          table={table}
-          columnId={"doctorName"}
-          placeholder="search by name"
-        />
         <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border">

@@ -1,4 +1,4 @@
-import CopyButton from "@/components/copyButton";
+import CopyButton from "@/components/copy-button";
 import { Card } from "@/components/ui/card";
 
 interface DashboardProps {

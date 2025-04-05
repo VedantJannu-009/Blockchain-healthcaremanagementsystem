@@ -1,5 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableColumnHeader } from "../data-table-column-header";
+import { Doctor } from "@/lib/types";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,42 +10,33 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { Button } from "../ui/button";
-import { Patient } from "@/lib/types";
-import CopyButton from "../copy-button";
 
 interface ColumnProps {
-  viewPatientDetails: (doctorAddress: string) => void;
+  approveTransferRequest: (requestId: string) => void;
+  rejectTransferRequest: (requestId: string) => void;
 }
+
 export const columns = ({
-  viewPatientDetails,
-}: ColumnProps): ColumnDef<Patient>[] => [
+  approveTransferRequest,
+  rejectTransferRequest,
+}: ColumnProps): ColumnDef<Doctor>[] => [
   {
-    accessorKey: "patientName",
+    accessorKey: "fromDoctor",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
+      <DataTableColumnHeader column={column} title="From Doctor" />
     ),
   },
   {
-    accessorKey: "patientAge",
+    accessorKey: "toDoctor",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Age" />
+      <DataTableColumnHeader column={column} title="To Doctor" />
     ),
   },
   {
-    accessorKey: "patientAddress",
+    accessorKey: "expiryTimestamp",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Address" />
+      <DataTableColumnHeader column={column} title="Expired by" />
     ),
-    cell: ({ row }) => {
-      const patientDetails = row.original;
-      return (
-        <div className="flex gap-2 items-center">
-          <span>{patientDetails.patientAddress}</span>
-          <CopyButton text={patientDetails.patientAddress} />
-        </div>
-      );
-    },
   },
   {
     id: "action",
@@ -53,7 +46,7 @@ export const columns = ({
       <DataTableColumnHeader column={column} title="Action" />
     ),
     cell: ({ row }) => {
-      const patientDetails = row.original;
+      const requestDetails = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -65,9 +58,16 @@ export const columns = ({
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => viewPatientDetails(patientDetails.patientAddress)}
+              onClick={() => approveTransferRequest(requestDetails.requestId)}
+              className="bg-green-500 hover:bg-green-600"
             >
-              View details
+              Approve
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => rejectTransferRequest(requestDetails.requestId)}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              Reject
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

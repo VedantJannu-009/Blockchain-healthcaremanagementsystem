@@ -8,12 +8,19 @@ import Header from "./components/header";
 import Registration from "./pages/registration";
 import Connect from "./pages/connect";
 import Dashboard from "./pages/dashboard";
-import ManageDoctors from "./components/manage-doctors/manageDoctors";
-import EventLogs from "./components/eventLogs";
-import ManagePatients from "./components/manage-patients/managePatients";
+import ManageDoctors from "./components/manage-doctors/manage-doctors";
+import EventLogs from "./components/event-logs";
+import ManagePatients from "./components/manage-patients/manage-patients";
+import { Patient } from "./lib/types";
+import MedicalRecords from "./components/medical-record";
+import ManageRecordAccess from "./components/manage-records/manage-record-access";
+import ManageTransferRequests from "./components/manage-transfer-request/manage-transfer-request";
+import ManageDoctorPatients from "./components/manage-doctor-patients/manage-doctor-patients";
 const App = () => {
   const [currentView, setCurrentView] = useState("connect");
-  const [userRole, setUserRole] = useState(null);
+  const [userRole, setUserRole] = useState<
+    "owner" | "patient" | "doctor" | null
+  >(null);
   const [contract, setContract] = useState<Contract | null>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [accounts, setAccounts] = useState([]);
@@ -143,11 +150,13 @@ const App = () => {
     }
   };
 
-  const registerAsPatient = async () => {
+  const registerAsPatient = async (patient: Patient) => {
     try {
+      if (!contract) throw new Error("Contract not initialized");
+      console.log(patient);
       const tx = await contract.registerPatient(
-        patientName,
-        parseInt(patientAge)
+        patient.patientName,
+        patient.patientAge
       );
       await tx.wait();
       setUserRole("patient");
@@ -353,230 +362,22 @@ const App = () => {
           <EventLogs contract={contract} />
           <ManageDoctors contract={contract} />
           <ManagePatients contract={contract} />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-6 rounded-lg shadow-md">
-              <h3 className="text-2xl font-semibold mb-4">All Patients</h3>
-              <div className="space-y-3">
-                {patients.map((patient) => (
-                  <div
-                    key={patient.address}
-                    className="border-b pb-2 last:border-b-0"
-                  >
-                    <p className="font-medium">{patient.name}</p>
-                    <p className="text-sm text-gray-600">Age: {patient.age}</p>
-                    <p className="text-xs text-gray-400 truncate">
-                      {patient.address}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
       )}
 
       {/* Doctor Dashboard */}
-      {userRole === "doctor" && (
+      {userRole === "doctor" && account && (
         <div className="space-y-8">
-          <div className="p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-4">
-              Patients Who Shared Records
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {sharedPatients.map((patient) => (
-                <div
-                  key={patient.address}
-                  className="border p-4 rounded-lg transition-colors"
-                >
-                  <p className="font-medium">{patient.name}</p>
-                  <p className="text-sm text-gray-600">Age: {patient.age}</p>
-                  <Button
-                    onClick={() => {
-                      setSelectedViewPatient(patient.address);
-                      loadPatientRecords(patient.address);
-                    }}
-                    className="mt-2 bg-blue-500 hover:bg-blue-600  text-sm px-3 py-1 rounded"
-                  >
-                    View Records
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {selectedViewPatient && (
-            <div className="p-6 rounded-lg shadow-md">
-              <h3 className="text-2xl font-semibold mb-4">Medical Records</h3>
-              <div className="space-y-4">
-                {selectedPatientRecords.map((record) => (
-                  <div
-                    key={record.recordID}
-                    className="border-l-4 border-blue-500 pl-4 py-2"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="font-medium">{record.disease}</p>
-                        <p className="text-sm text-gray-600">
-                          {record.diagnosis}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {record.treatment}
-                        </p>
-                      </div>
-                      <span className="text-sm text-gray-500">
-                        {new Date(
-                          Number(record.timestamp) * 1000
-                        ).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Record ID: {parseInt(record.recordID)}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div className="p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-4">Add Medical Record</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <select
-                className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                onChange={(e) => setSelectedPatient(e.target.value)}
-              >
-                <option value="" disabled>
-                  Select Patient
-                </option>
-                {sharedPatients.map((patient) => (
-                  <option key={patient.address} value={patient.address}>
-                    {patient.name}
-                  </option>
-                ))}
-              </select>
-              <input
-                className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Disease"
-                onChange={(e) => setDisease(e.target.value)}
-              />
-              <input
-                className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Diagnosis"
-                onChange={(e) => setDiagnosis(e.target.value)}
-              />
-              <input
-                className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Treatment"
-                onChange={(e) => setTreatment(e.target.value)}
-              />
-            </div>
-            <Button
-              onClick={addMedicalRecord}
-              className="bg-green-500 hover:bg-green-600  font-bold py-2 px-4 rounded transition duration-300"
-            >
-              Add Record
-            </Button>
-          </div>
+          <ManageDoctorPatients contract={contract} account={account} />
         </div>
       )}
 
       {/* Patient Dashboard */}
       {userRole === "patient" && (
         <div className="space-y-8">
-          <div className="p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-4">Medical Records</h3>
-            <div className="space-y-4">
-              {medicalRecords.map((record) => (
-                <div
-                  key={record.recordID}
-                  className="border-l-4 border-blue-500 pl-4 py-2"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium">{record.disease}</p>
-                      <p className="text-sm text-gray-600">
-                        {record.diagnosis}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {record.treatment}
-                      </p>
-                    </div>
-                    <span className="text-sm text-gray-500">
-                      {new Date(
-                        Number(record.timestamp) * 1000
-                      ).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Record ID: {record.recordID}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="p-6 rounded-lg shadow-md">
-            <h3 className="text-2xl font-semibold mb-4">
-              Manage Record Access
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <h4 className="font-medium text-lg">Share with Doctor</h4>
-                <select
-                  className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  onChange={(e) => setSelectedDoctor(e.target.value)}
-                >
-                  <option value="" disabled>
-                    Select a doctor
-                  </option>
-                  {doctors.map((doctor) => (
-                    <option key={doctor.address} value={doctor.address}>
-                      {doctor.name} ({doctor.specialization})
-                    </option>
-                  ))}
-                </select>
-                <Button
-                  onClick={shareRecordsWithDoctor}
-                  className="bg-blue-500 hover:bg-blue-600  font-bold py-2 px-4 rounded transition duration-300"
-                >
-                  Share Records
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                <h4 className="font-medium text-lg">Authorized Doctors</h4>
-                <div className="space-y-2">
-                  {authorizedDoctors.map((doctorAddress) => {
-                    const doctor = doctors.find(
-                      (d) => d.address === doctorAddress
-                    );
-                    return (
-                      <div
-                        key={doctorAddress}
-                        className="flex justify-between items-center p-2 rounded"
-                      >
-                        <div>
-                          <p className="font-medium">
-                            {doctor ? doctor.name : "Unknown Doctor"}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            {doctor?.specialization || "Unknown Specialization"}
-                          </p>
-                        </div>
-                        <Button
-                          onClick={() => revokeAccess(doctorAddress)}
-                          className="bg-red-500 hover:bg-red-600  text-sm px-3 py-1 rounded"
-                        >
-                          Revoke
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
+          <MedicalRecords contract={contract} patientAddress={account} />
+          <ManageRecordAccess contract={contract} patientAddress={account} />
+          <ManageTransferRequests contract={contract} />
         </div>
       )}
     </div>

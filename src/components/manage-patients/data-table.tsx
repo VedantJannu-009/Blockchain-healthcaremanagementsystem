@@ -20,9 +20,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { DataTablePagination } from "../dataTablePagination";
-import { DataTableViewOptions } from "../dataTableViewOptions";
-import DataTableColumnFilter from "../dataTableColumnFilter";
+import { DataTablePagination } from "../data-table-pagination";
+import { DataTableViewOptions } from "../data-table-view-options";
+import DataTableColumnFilter from "../data-table-column-filter";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

@@ -15,12 +15,12 @@ import {
 import { MoreHorizontal } from "lucide-react";
 
 interface ColumnProps {
-  doctorAction: (isActive: boolean, doctorAddress: string) => void;
+  revokeAccess: (doctorAddress: string) => void;
   viewDoctorDetails: (doctorAddress: string) => void;
 }
 
 export const columns = ({
-  doctorAction,
+  revokeAccess,
   viewDoctorDetails,
 }: ColumnProps): ColumnDef<Doctor>[] => [
   {
@@ -98,19 +98,10 @@ export const columns = ({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() =>
-                doctorAction(
-                  doctorDetails.isActive,
-                  doctorDetails.doctorAddress
-                )
-              }
-              className={`text-xs rounded transition  ${
-                doctorDetails.isActive
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-green-500 hover:bg-green-600"
-              }`}
+              onClick={() => revokeAccess(doctorDetails.doctorAddress)}
+              className="bg-red-500 hover:bg-red-600"
             >
-              {doctorDetails.isActive ? "Deactivate" : "Activate"}
+              Revoke
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
