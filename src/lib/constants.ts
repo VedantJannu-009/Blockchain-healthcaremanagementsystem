@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const contractAddress = "0xa10153000d844441d0ccc8d7890de98e31cb9111"; // Replace with your contract address
+export const contractAddress = "0xb819c23c807e24b2e7a51cd490733833eb640bab"; // Replace with your contract address
 export const contractABI = [
   {
     inputs: [],
@@ -402,6 +402,11 @@ export const contractABI = [
         name: "",
         type: "string",
       },
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -746,4 +751,26 @@ export const shareRecordSchema = z.object({
   doctorAddress: z.string().refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
     message: "Invalid Ethereum address",
   }),
+});
+
+export const transferRequestSchema = z.object({
+  requestId: z.string(),
+  patientAddress: z
+    .string()
+    .refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
+      message: "Invalid Ethereum address",
+    }),
+  fromDoctor: z.string().refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
+    message: "Invalid Ethereum address",
+  }),
+  fromDoctorName: z.string(),
+  fromDoctorSpecialization: z.string(),
+  toDoctor: z.string().refine((addr) => /^0x[a-fA-F0-9]{40}$/.test(addr), {
+    message: "Invalid Ethereum address",
+  }),
+  toDoctorName: z.string(),
+  toDoctorSpecialization: z.string(),
+  approved: z.boolean(),
+  expiryTimestamp: z.string(),
+  rejectionReason: z.string().optional(),
 });

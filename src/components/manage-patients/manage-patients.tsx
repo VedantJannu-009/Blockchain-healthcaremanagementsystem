@@ -7,23 +7,7 @@ import { Contract } from "ethers";
 import { toast } from "sonner";
 import { RefreshCcw } from "lucide-react";
 import { Button } from "../ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "../ui/drawer";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "../ui/sheet";
+import DrawerSheet from "../drawer-sheet";
 
 interface ManagePatientsProps {
   contract: Contract | null;
@@ -81,10 +65,24 @@ const ManagePatients = ({ contract }: ManagePatientsProps) => {
     try {
       setLoading(true);
       if (!contract) throw new Error("Contract not initialized");
+
       const addresses = await contract.getAuthorizedDoctorsForPatient(
         patientAddress
       );
-      setAuthorizedDoctors(addresses);
+
+      const detailedDoctors: Doctor[] = await Promise.all(
+        addresses.map(async (address: string) => {
+          const [name, specialization] = await contract.getDoctorInfo(address);
+          return {
+            doctorAddress: address,
+            doctorName: name,
+            doctorSpecialization: specialization,
+          };
+        })
+      );
+      console.log(detailedDoctors);
+
+      setAuthorizedDoctors(detailedDoctors);
     } catch (error) {
       console.error("Failed to load doctors:", error);
       toast("Failed to load doctors");
@@ -104,7 +102,6 @@ const ManagePatients = ({ contract }: ManagePatientsProps) => {
   }, [contract]);
 
   const columns = defaultColumns({ viewPatientDetails });
-  const isMobile = useIsMobile();
   return (
     <section className="container mx-auto py-10">
       <div className="flex items-center justify-between">
@@ -127,91 +124,36 @@ const ManagePatients = ({ contract }: ManagePatientsProps) => {
       ) : (
         <DataTable columns={columns} data={patients} />
       )}
-      {isMobile ? (
-        <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Patient Details</DrawerTitle>
-              <DrawerDescription>
-                View patient info & authorized doctors
-              </DrawerDescription>
-            </DrawerHeader>
+      <DrawerSheet
+        open={isDrawerOpen}
+        onOpenChange={setIsDrawerOpen}
+        title={"Patient Details"}
+        description={"View patient info & authorized doctors"}
+      >
+        {patientDetails ? (
+          <div>
+            <p className="text-lg font-semibold">
+              {patientDetails.patientName}
+            </p>
+            <p className="text-gray-600">Age: {patientDetails.patientAge}</p>
 
-            {patientDetails ? (
-              <div className="p-4">
-                <p className="text-lg font-semibold">
-                  {patientDetails.patientName}
-                </p>
-                <p className="text-gray-600">
-                  Age: {patientDetails.patientAge}
-                </p>
-                <h3 className="mt-4 font-medium">Authorized Doctors</h3>
-                <div className="list-disc list-inside mt-2">
-                  {authorizedDoctors.length > 0 ? (
-                    authorizedDoctors.map((doctor) => (
-                      <p key={doctor.doctorAddress}>
-                        {doctor.doctorName} (Specialization:{" "}
-                        {doctor.doctorSpecialization})
-                      </p>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-500">
-                      No authorized doctors
-                    </p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p className="text-center p-4">Loading...</p>
-            )}
-
-            <DrawerFooter>
-              <DrawerClose asChild>
-                <Button className="w-full">Close</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          </DrawerContent>
-        </Drawer>
-      ) : (
-        <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Patient Details</SheetTitle>
-              <SheetDescription>
-                View patient info & authorized doctors
-              </SheetDescription>
-            </SheetHeader>
-            {patientDetails ? (
-              <div className="p-4">
-                <p className="text-lg font-semibold">
-                  {patientDetails.patientName}
-                </p>
-                <p className="text-gray-600">
-                  Age: {patientDetails.patientAge}
-                </p>
-
-                <h3 className="mt-4 font-medium">Authorized doctors</h3>
-                <div className="list-disc list-inside mt-2">
-                  {authorizedDoctors.length > 0 ? (
-                    authorizedDoctors.map((doctor) => (
-                      <p key={doctor.doctorAddress}>
-                        {doctor.doctorName} (Specialization:{" "}
-                        {doctor.doctorSpecialization})
-                      </p>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-500">
-                      No authorized doctors
-                    </p>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p className="text-center p-4">Loading...</p>
-            )}
-          </SheetContent>
-        </Sheet>
-      )}
+            <h3 className="mt-4 font-medium">Authorized Doctors</h3>
+            <div className="list-disc list-inside mt-2">
+              {authorizedDoctors.length > 0 ? (
+                authorizedDoctors.map((doctor) => (
+                  <p key={doctor.doctorAddress}>
+                    {doctor.doctorName} ({doctor.doctorSpecialization})
+                  </p>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">No authorized doctors</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <p className="text-center p-4">Loading...</p>
+        )}
+      </DrawerSheet>
     </section>
   );
 };

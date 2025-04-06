@@ -6,14 +6,16 @@ import { Contract } from "ethers";
 import { toast } from "sonner";
 import { RefreshCcw } from "lucide-react";
 import { Button } from "../ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { TransferRequest } from "@/lib/types";
 
 interface ManageTransferRequestsProps {
   contract: Contract | null;
 }
 
 const ManageTransferRequests = ({ contract }: ManageTransferRequestsProps) => {
-  const [transferRequests, setTransferRequests] = useState([]);
+  const [transferRequests, setTransferRequests] = useState<TransferRequest[]>(
+    []
+  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const loadTransferRequests = async () => {
@@ -21,21 +23,37 @@ const ManageTransferRequests = ({ contract }: ManageTransferRequestsProps) => {
       setLoading(true);
       if (!contract) throw new Error("Contract not initialized");
 
-      // Fetch transfer requests from the smart contract
       const requestsWithId = await contract.getTransferRequestsForPatient();
-      console.log("Transfer Requests with IDs:", requestsWithId);
 
-      // Transform the data into a frontend-friendly format
-      const formattedRequests = requestsWithId.map(
-        ({ requestId, request }) => ({
-          requestId: requestId.toString(), // Convert BigNumber to string
-          recordId: request.recordID.toString(),
-          fromDoctor: request.fromDoctor,
-          toDoctor: request.toDoctor,
-          patientAddress: request.patientAddress,
-          approved: request.approved,
-          expiryTimestamp: request.expiryTimestamp.toString(),
-          rejectionReason: request.rejectionReason,
+      // Use Promise.all to resolve doctor info concurrently
+      const formattedRequests = await Promise.all(
+        requestsWithId.map(async ({ requestId, request }) => {
+          const { fromDoctor, toDoctor, expiryTimestamp } = request;
+
+          // Fetch fromDoctor details
+          const [fromName, fromSpec] = await contract.getDoctorInfo(fromDoctor);
+
+          // Fetch toDoctor details
+          const [toName, toSpec] = await contract.getDoctorInfo(toDoctor);
+
+          // Format expiry timestamp (from seconds to milliseconds)
+          const formattedExpiry = new Date(
+            Number(expiryTimestamp.toString()) * 1000
+          ).toLocaleString(); // Local date/time string
+
+          return {
+            requestId: requestId.toString(),
+            patientAddress: request.patientAddress,
+            fromDoctor,
+            fromDoctorName: fromName,
+            fromDoctorSpecialization: fromSpec,
+            toDoctor,
+            toDoctorName: toName,
+            toDoctorSpecialization: toSpec,
+            approved: request.approved,
+            rejectionReason: request.rejectionReason,
+            expiryTimestamp: formattedExpiry,
+          };
         })
       );
 
@@ -87,7 +105,6 @@ const ManageTransferRequests = ({ contract }: ManageTransferRequestsProps) => {
     approveTransferRequest,
     rejectTransferRequest,
   });
-  const isMobile = useIsMobile();
 
   return (
     <section className="container mx-auto py-10">

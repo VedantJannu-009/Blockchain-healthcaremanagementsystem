@@ -127,10 +127,10 @@ const ManageDoctorPatients = ({ contract, account }: ManagePatientsProps) => {
       );
       await tx.wait();
       getMedicalRecords(patientAddress); // Refresh the records for this patient
-      alert("Record added!");
+      toast("Record added!");
     } catch (error) {
       console.error("Failed to add record:", error);
-      alert("Record addition failed");
+      toast("Record addition failed");
     }
   };
   const requestRecordTransfer = async (
@@ -143,10 +143,10 @@ const ManageDoctorPatients = ({ contract, account }: ManagePatientsProps) => {
       if (!contract) throw new Error("Contract not initialized");
       const tx = await contract.requestTransfer(patientAddress, doctorAddress);
       await tx.wait();
-      alert("Transfer request sent!");
+      toast("Transfer request sent!");
     } catch (error) {
       console.error("Transfer request failed:", error);
-      alert("Transfer request failed");
+      toast("Transfer request failed");
     }
   };
 
