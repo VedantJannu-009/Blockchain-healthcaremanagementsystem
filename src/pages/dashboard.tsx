@@ -1,4 +1,3 @@
-import CopyButton from "@/components/copy-button";
 import EventLogs from "@/components/event-logs";
 import ManageDoctorPatients from "@/components/manage-doctor-patients/manage-doctor-patients";
 import ManageDoctors from "@/components/manage-doctors/manage-doctors";
@@ -6,8 +5,6 @@ import ManagePatients from "@/components/manage-patients/manage-patients";
 import ManageRecordAccess from "@/components/manage-records/manage-record-access";
 import ManageTransferRequests from "@/components/manage-transfer-request/manage-transfer-request";
 import MedicalRecords from "@/components/medical-record";
-import { ModeToggle } from "@/components/mode-toggle";
-import { Card } from "@/components/ui/card";
 import { Contract } from "ethers";
 
 interface DashboardProps {
