@@ -307,17 +307,17 @@ const ManageDoctors = ({ contract }: ManageDoctorsProps) => {
                 </p>
 
                 <h3 className="mt-4 font-medium">Shared Patients</h3>
-                <ul className="list-disc list-inside mt-2">
+                <div className="list-disc list-inside mt-2">
                   {sharedPatients.length > 0 ? (
                     sharedPatients.map((patient) => (
-                      <li key={patient.patientAddress}>
+                      <p key={patient.patientAddress}>
                         {patient.patientName} (Age: {patient.patientAge})
-                      </li>
+                      </p>
                     ))
                   ) : (
                     <p className="text-sm text-gray-500">No shared patients</p>
                   )}
-                </ul>
+                </div>
               </div>
             ) : (
               <p className="text-center p-4">Loading...</p>

@@ -109,6 +109,7 @@ const App = () => {
               setContract(new Contract(contractAddress, contractABI, signer));
             });
           }}
+          userRole={userRole}
         />
         {currentView === "connect" && <Connect connectWallet={connectWallet} />}
         {currentView === "register" && (
