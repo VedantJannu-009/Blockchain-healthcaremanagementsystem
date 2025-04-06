@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const contractAddress = "0xb819c23c807e24b2e7a51cd490733833eb640bab"; // Replace with your contract address
+export const contractAddress = "0x12ee18de8a8524b7e108178596ebeed5c9b2b589"; // Replace with your contract address
 export const contractABI = [
   {
     inputs: [],
