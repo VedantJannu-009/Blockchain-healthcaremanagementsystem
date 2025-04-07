@@ -20,7 +20,14 @@ import { cn } from "@/lib/utils";
 import { doctorSchema, specializations } from "@/lib/constants";
 import { Doctor } from "@/lib/types";
 import DialogDrawer from "./dialog-drawer";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "./ui/command";
 
 interface RegisterDoctorProps {
   registerAsDoctor: (values: Doctor) => void;
