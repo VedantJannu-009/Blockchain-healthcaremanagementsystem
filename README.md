@@ -61,22 +61,27 @@ If you're deploying the contract yourself rather than using an existing deployme
 ## Screenshots
 
 **Owner Dashboard** — event log, doctor management, and patient management in one place
-![Owner dashboard](./screenshots/01-owner-dashboard.png)
+<img width="910" height="596" alt="image" src="https://github.com/user-attachments/assets/621a3ece-79a5-49fc-b103-dfc79eaf58b5" />
+
 
 **Doctor View — Shared Patients**
-![Doctor shared patients view](./screenshots/02-doctor-shared-patients.png)
+<img width="931" height="495" alt="image" src="https://github.com/user-attachments/assets/b4661ad9-4aad-4f25-bb1b-b3c70459fda5" />
+
 
 **Patient View — Medical Records & Authorized Doctors**
-![Patient medical records](./screenshots/03-patient-medical-records.png)
+<img width="969" height="514" alt="image" src="https://github.com/user-attachments/assets/eda2ad88-3925-4289-a4ce-a8af4b87bea2" />
 
 **Doctor View — Patient Details Panel**
-![Patient details panel](./screenshots/04-patient-details-panel.png)
+<img width="1012" height="538" alt="image" src="https://github.com/user-attachments/assets/974e3995-346d-4f6f-9002-f0615c90f230" />
+
 
 **Requesting a Record Transfer to Another Doctor**
-![Request transfer record](./screenshots/05-request-transfer-record.png)
+<img width="1012" height="538" alt="image" src="https://github.com/user-attachments/assets/400fca27-cc94-4a68-af8d-63fe278efeb5" />
+
 
 **Patient Reviewing a Transfer Request**
-![Manage transfer requests](./screenshots/06-manage-transfer-requests.png)
+<img width="1023" height="543" alt="image" src="https://github.com/user-attachments/assets/2b033710-7d38-487e-ad32-8bfec8f3da41" />
+
 
 ## License
 
